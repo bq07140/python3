@@ -1,0 +1,33 @@
+<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到天天生鲜!</div>
+			<div class="fr">
+
+                {% if request.session.username %}
+				<div class="login_btn fl">
+					欢迎您：<em>{{ request.session.username }}</em>
+                    <span>|</span>
+                    <a href="{% url 'users:logout' %}">退出</a>
+				</div>
+                {% else %}
+				<div class="login_btn fl">
+					<a href="{% url 'users:login' %}">登录</a>
+					<span>|</span>
+					<a href="{% url 'users:register' %}">注册</a>
+				</div>
+                {% endif %}
+
+
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="{% url 'users:centerinfo' %}" target="_blank">用户中心</a>
+					<span>|</span>
+					<a href="{% url 'carts:index' %}" target="_blank">我的购物车</a>
+					<span>|</span>
+					<a href="{% url 'users:centerorder' %}" target="_blank">我的订单</a>
+				</div>
+
+
+			</div>
+		</div>
+	</div>

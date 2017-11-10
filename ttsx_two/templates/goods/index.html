@@ -1,0 +1,109 @@
+{# 继承父模板 #}
+{% extends 'common/base.html' %}
+
+{# 加载标签 #}
+{% load staticfiles %}
+
+{# 加载过滤器 #}
+{% load goods_filters %}
+
+{% block header_js %}
+<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/slide.js' %}"></script>
+{% endblock header_js %}
+
+
+{# 首页主体部分内容 #}
+{% block body %}
+
+	{# 是否登录的状态 #}
+    {% include 'common/status.html' %}
+
+	<div class="search_bar clearfix">
+		<a href="#" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<div class="search_con fl">
+			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
+			<input type="button" class="input_btn fr" name="" value="搜索">
+		</div>
+
+        {# 我的购物车 #}
+        {% include 'goods/mycart.html' %}
+
+	</div>
+
+	<div class="navbar_con">
+		<div class="navbar">
+			<h1 class="fl">全部商品分类</h1>
+			<ul class="navlist fl">
+				<li><a href="">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="center_con clearfix">
+		<ul class="subnav fl">
+			<li><a href="{% url 'goods:list' 1 1 %}" class="fruit">新鲜水果</a></li>
+			<li><a href="{% url 'goods:list' 2 1 %}" class="seafood">海鲜水产</a></li>
+			<li><a href="{% url 'goods:list' 3 1 %}" class="meet">猪牛羊肉</a></li>
+			<li><a href="{% url 'goods:list' 4 1 %}" class="egg">禽类蛋品</a></li>
+			<li><a href="{% url 'goods:list' 5 1 %}" class="vegetables">新鲜蔬菜</a></li>
+			<li><a href="{% url 'goods:list' 6 1 %}" class="ice">速冻食品</a></li>
+		</ul>
+		<div class="slide fl">
+
+			<ul class="slide_pics">
+
+                {% for ad in ad1 %}
+				<li ><a href="{{ ad.ad_link }}"><img src="{% static ad.ad_image %}" alt="幻灯片"></a></li>
+                {% endfor %}
+
+			</ul>
+
+			<div class="prev"></div>
+			<div class="next"></div>
+			<ul class="points"></ul>
+		</div>
+
+		<div class="adv fl">
+            {% for ad in ad2 %}
+			<a href="http://www.baidu.com"><img src="{% static ad.ad_image %}"></a>
+            {% endfor %}
+		</div>
+
+	</div>
+
+    {% for cag in cags %}
+	<div class="list_model">
+		<div class="list_title clearfix">
+			<h3 class="fl" id="model0{{ cag.id }}" >{{ cag.cag_name }}</h3>
+			<div class="subtitle fl">
+				<span>|</span>
+                {% for goods in cag.hot %}
+				<a href="{% url 'goods:detail' %}?id={{ goods.id }}">{{ goods.goods_name }}</a>
+                {% endfor %}
+			</div>
+			<a href="#" class="goods_more fr" id="fruit_more">查看更多 ></a>
+		</div>
+
+		<div class="goods_con clearfix">
+			<div class="goods_banner fl"><img src="{% static forloop.counter|cag_image %}"></div>
+			<ul class="goods_list fl">
+
+                {% for goods in cag.new %}
+				<li>
+					<h4><a href="{% url 'goods:detail' %}?id={{ goods.id }}">{{ goods.goods_name }}</a></h4>
+					<a href="{% url 'goods:detail' %}?id={{ goods.id }}"><img src="{% static goods.goods_image %}"></a>
+					<div class="prize">¥ {{ goods.goods_price }}</div>
+				</li>
+                {% endfor %}
+			</ul>
+		</div>
+	</div>
+    {% endfor %}
+
+{% endblock body %}

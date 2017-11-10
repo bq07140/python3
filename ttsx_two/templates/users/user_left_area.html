@@ -1,0 +1,36 @@
+{% load users_filters %}
+
+
+<div class="left_menu_con clearfix">
+    <h3>用户中心</h3>
+    <ul>
+
+    {# abc|filer_name #}
+    {# flag|create_menu #}
+
+    {% with menus=flag|create_menu  %}
+        {% for menu in menus %}
+        <li><a href="{{ menu.link }}" class="{{ menu.active }}"  >· {{ menu.name }}</a></li>
+        {% endfor %}
+    {% endwith %}
+
+    </ul>
+</div>
+
+
+{# 方法2 #}
+{#<div class="left_menu_con clearfix">#}
+{#    <h3>用户中心</h3>#}
+{#    <ul>#}
+{#        <li><a href="{% url 'users:centerinfo' %}" {% if flag == 'info' %}#}
+{#        class="active"#}
+{#        {% endif %} >· 个人信息</a></li>#}
+{#        <li><a href="{% url 'users:centerorder' %}" {% if flag == 'order' %}#}
+{#        class="active"#}
+{#        {% endif %}>· 全部订单</a></li>#}
+{#        <li><a href="{% url 'users:centersite' %}" {% if flag == 'site' %}#}
+{#        class="active"#}
+{#        {% endif %} >· 收货地址</a></li>#}
+{#    </ul>#}
+{#</div>#}
+

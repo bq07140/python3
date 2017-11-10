@@ -1,0 +1,189 @@
+{# 继承父模板 #}
+{% extends 'common/base.html' %}
+
+{# 加载标签 #}
+{% load staticfiles %}
+
+{% block header_js %}
+<script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script>
+        $(function () {
+            $('.add').click(function () {
+                num = $('.num_show').val()
+                num = parseInt(num) + 1
+
+                update_price(num)
+
+            });
+
+            $('.minus').click(function () {
+                num = $('.num_show').val()
+                num = parseInt(num) - 1
+                if(num <= 0) {
+                    num = 1
+                }
+                update_price(num)
+
+            });
+
+            function update_price(num) {
+                $('.num_show').val(num)
+
+                price = $('.show_pirze').find('em').html()
+                total = num*parseFloat(price)
+                $('.total').find('em').html(total+'元')
+            };
+
+            {# 加入购物车,ajax传参#}
+            $('.add_cart').click(function () {
+                goods_num = $('.num_show').val()
+                goods_id = $('.goods_id').val()
+                $.get('{% url "carts:addcart" %}', {'goods_num':goods_num, 'goods_id':goods_id},
+                function (data) {
+                    alert('加入购物车成功!')
+                    $('#show_count').html(data.total)
+                }
+                );
+            });
+        })
+
+    </script>
+
+{% endblock header_js %}
+
+
+{% block body %}
+
+    {% include 'common/status.html' %}
+
+	<div class="search_bar clearfix">
+		<a href="{% url 'goods:index' %}" class="logo fl"><img src="{% static 'images/logo.png' %}"></a>
+		<div class="search_con fl">
+			<input type="text" class="input_text fl" name="" placeholder="搜索商品">
+			<input type="button" class="input_btn fr" name="" value="搜索">
+		</div>
+
+        {# 我的购物车 #}
+        {% include 'goods/mycart.html' %}
+
+	</div>
+
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>	
+				<span></span>			
+				<ul class="subnav">
+					<li><a href="{% url 'goods:list' 1 1 %}" class="fruit">新鲜水果</a></li>
+					<li><a href="{% url 'goods:list' 2 1 %}" class="seafood">海鲜水产</a></li>
+					<li><a href="{% url 'goods:list' 3 1 %}" class="meet">猪牛羊肉</a></li>
+					<li><a href="{% url 'goods:list' 4 1 %}" class="egg">禽类蛋品</a></li>
+					<li><a href="{% url 'goods:list' 5 1 %}" class="vegetables">新鲜蔬菜</a></li>
+					<li><a href="{% url 'goods:list' 6 1 %}" class="ice">速冻食品</a></li>
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">新鲜水果</a>
+		<span>></span>
+		<a href="#">商品详情</a>
+	</div>
+
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="{% static goods.goods_image %}"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{ goods.goods_name }}</h3>
+			<p>{{ goods.goods_short }}</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em>{{ goods.goods_price }}</em></span>
+				<span class="show_unit">单  位：{{ goods.goods_unit }}</span>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="1">
+					<a href="javascript:;" class="add fr">+</a>
+					<a href="javascript:;" class="minus fr">-</a>	
+				</div>
+			</div>
+			<div class="total">总价：<em>{{ goods.goods_price }}元</em></div>
+            <div class="operate_btn">
+				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+                <input type="hidden" class="goods_id" value="{{ goods.id }}">
+			</div>
+		</div>
+	</div>
+
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+					{% for good in goods_new %}
+					<li>
+						<a href="{% url 'goods:detail' %}?id={{ good.id }} "><img src="{% static good.goods_image %}"></a>
+						<h4><a href="{% url 'goods:detail' %}?id={{ good.id }}">{{ good.goods_name }}</a></h4>
+						<div class="prize">￥{{ good.goods_price }}</div>
+					</li>
+                    {% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="active">商品介绍</li>
+				<li>评论</li>
+			</ul>
+
+			<div class="tab_content">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd>{{ goods.goods_desc }}</dd>
+				</dl>
+			</div>
+
+		</div>
+	</div>
+
+{% endblock body %}
+
+
+{% block footer_js %}
+
+	<div class="add_jump"></div>
+
+	<script type="text/javascript" src="{% static 'js/jquery-1.12.2.js' %}"></script>
+	<script type="text/javascript">
+{#		var $add_x = $('#add_cart').offset().top;#}
+{#		var $add_y = $('#add_cart').offset().left;#}
+{##}
+{#		var $to_x = $('#show_count').offset().top;#}
+{#		var $to_y = $('#show_count').offset().left;#}
+{##}
+{#		$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})#}
+{#		$('#add_cart').click(function(){#}
+{#			$(".add_jump").stop().animate({#}
+{#				'left': $to_y+7,#}
+{#				'top': $to_x+7},#}
+{#				"fast", function() {#}
+{#					$(".add_jump").fadeOut('fast',function(){#}
+{#						$('#show_count').html(2);#}
+{#					});#}
+{#			});#}
+{#		})#}
+	</script>
+{% endblock footer_js %}
